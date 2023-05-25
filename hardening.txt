@@ -1,0 +1,42 @@
+#!/bin/zsh
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root! *heavy sigh*" 1>&2
+   exit 1
+fi
+
+apt-get update
+apt-get full-upgrade
+
+apt-get install apt-listbugs debsecan debsums tripwire samhain aide fail2ban menu-l10n usbguard unattended-upgrades auditd sysstat acct arpwatch libpam-tmpdir chkrootkit apt-listchanges needrestart passwdqc
+
+systemctl enable arpwatch sysstat auditd
+
+chmod 750 /home/*
+chmod 750 /etc/sudoers.d
+chmod 640 /etc/cron*
+chmod o-rx /usr/bin/gcc /usr/bin/g++ /usr/bin/as /usr/bin/cc /usr/bin/clang /usr/bin/clang++
+chmod o-rx /bin/gcc /bin/g++ /bin/as /bin/cc /bin/clang /bin/clang++
+
+rm /etc/modprobe.d/custom-blacklist.conf
+echo "install dccp /bin/true" >> /etc/modprobe.d/custom-blacklist.conf
+echo "install sctp /bin/true" >> /etc/modprobe.d/custom-blacklist.conf
+echo "install rds /bin/true" >> /etc/modprobe.d/custom-blacklist.conf
+echo "install tipc /bin/true" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist ohci1394" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist sbp2" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist dv1394" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist raw1394" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist video1394" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist firewire-ohci" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist firewire-sbp2" >> /etc/modprobe.d/custom-blacklist.conf
+echo "blacklist usb-storage" >> /etc/modprobe.d/custom-blacklist.conf
+
+#
+#
+#
+#
+#
+#
+
+sudo update-initramfs -k all -u
+
